@@ -44,11 +44,26 @@ class LocationSeeder extends Seeder
                 continue;
             }
 
-            // Use updateOrCreate so re-running the seeder is safe
-            Location::updateOrCreate(
-                ['id' => $locationId],
-                ['description' => $vehicle['location_description'] ?? null]
-            );
+            // Check if this location_id already exists with a different description
+            $existing = Location::find($locationId);
+
+            if ($existing) {
+                // Log a warning if source data has conflicting descriptions
+                // for the same location_id — keep the first one we saw
+                if ($existing->description !== $vehicle['location_description']) {
+                    Log::warning('Conflicting location description for location_id ' . $locationId);
+                    $this->command->warn(
+                        'Conflicting location data: location_id ' . $locationId .
+                        ' has multiple descriptions. Keeping "' . $existing->description . '"'
+                    );
+                }
+                continue;
+            }
+
+            Location::create([
+                'id'          => $locationId,
+                'description' => $vehicle['location_description'] ?? null,
+            ]);
 
             $seededCount++;
         }
