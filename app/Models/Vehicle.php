@@ -29,7 +29,7 @@ class Vehicle extends Model
     }
 
     // Get all vehicles enriched with location and booking data
-    public static function getEnrichedFleet(): array
+    public static function getFleetData(): array
     {
         $vehicles = self::with('location')->withCount('bookings')->get();
         $now = now();

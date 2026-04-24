@@ -10,7 +10,7 @@ class VehicleController extends Controller
     public function index(): JsonResponse
     {
         try {
-        $vehicles = Vehicle::getEnrichedFleet();
+        $vehicles = Vehicle::getFleetData();
         return response()->json(['data' => $vehicles]);
 
         } catch (\Exception $e) {
