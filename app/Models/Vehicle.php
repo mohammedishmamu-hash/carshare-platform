@@ -51,7 +51,6 @@ class Vehicle extends Model
                 'colour'         => $vehicle->colour,
                 'location'       => $vehicle->location->description ?? 'Location unavailable',
                 'total_bookings' => $vehicle->bookings_count,
-                // Check membership in PHP instead of hitting the DB per vehicle
                 'is_available'   => !in_array($vehicle->id, $bookedVehicleIds),
             ];
         })->toArray();
