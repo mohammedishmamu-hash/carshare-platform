@@ -8,8 +8,8 @@ A Laravel + Vue.js web application that displays vehicle fleet, enriched with bo
 
 | Layer      | Technology                        |
 |------------|-----------------------------------|
-| Backend    | PHP 8.2+, Laravel 13              |
-| Database   | MySQL 8.0+                        |
+| Backend    | PHP 8.5+, Laravel 13.6            |
+| Database   | MySQL 9.6+                        |
 | Frontend   | Vue.js 3 (CDN), Bootstrap 5       |
 
 ---
