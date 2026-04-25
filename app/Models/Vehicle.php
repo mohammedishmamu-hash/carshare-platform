@@ -34,14 +34,15 @@ class Vehicle extends Model
         $vehicles = self::with('location')->withCount('bookings')->get();
         $now = now();
 
-        return $vehicles->map(function ($vehicle) use ($now) {
-            // Using Query Builder for availability — explicit date range check
-            $isAvailable = DB::table('bookings')
-                ->where('vehicle_id', $vehicle->id)
-                ->where('started_at', '<=', $now)
-                ->where('ended_at', '>=', $now)
-                ->doesntExist();
+        // Load all currently booked vehicle IDs in a single query
+        // instead of querying the bookings table once per vehicle
+        $bookedVehicleIds = DB::table('bookings')
+            ->where('started_at', '<=', $now)
+            ->where('ended_at', '>=', $now)
+            ->pluck('vehicle_id')
+            ->toArray();
 
+        return $vehicles->map(function ($vehicle) use ($bookedVehicleIds) {
             return [
                 'id'             => $vehicle->id,
                 'make'           => $vehicle->make,
@@ -50,7 +51,8 @@ class Vehicle extends Model
                 'colour'         => $vehicle->colour,
                 'location'       => $vehicle->location->description ?? 'Location unavailable',
                 'total_bookings' => $vehicle->bookings_count,
-                'is_available'   => $isAvailable,
+                // Check membership in PHP instead of hitting the DB per vehicle
+                'is_available'   => !in_array($vehicle->id, $bookedVehicleIds),
             ];
         })->toArray();
     }
