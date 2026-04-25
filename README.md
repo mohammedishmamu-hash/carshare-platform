@@ -1,6 +1,6 @@
 # Carshare Platform
 
-A Laravel + Vue.js web application that displays Modo's vehicle fleet, enriched with booking data.
+A Laravel + Vue.js web application that displays vehicle fleet, enriched with booking data.
 
 ---
 
